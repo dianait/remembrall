@@ -3,12 +3,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.dianait.myapplication.CellClickListener
 import com.dianait.myapplication.R
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.firestore.DocumentSnapshot
+import services.firestore.FirestoreService
 
 enum class Emoji(val src: String) {
     BUY("🛒"),
@@ -24,8 +27,11 @@ internal class RecyclerAdapter(private var itemsList: MutableList<DocumentSnapsh
         // Title
         var itemTextView: TextView = view.findViewById(R.id.text_reminder)
         // subtitle
-        var locationTextView : TextView = view.findViewById(R.id.location)
+        var locationTextView: TextView = view.findViewById(R.id.location)
+        // switch done
+        var switchDone = view.findViewById<Switch>(R.id.switch_done)
     }
+
     @NonNull
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -33,15 +39,21 @@ internal class RecyclerAdapter(private var itemsList: MutableList<DocumentSnapsh
         return MyViewHolder(itemView)
     }
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        var db = FirestoreService()
         // For each item get the info required and show it in the right place
         val item: DocumentSnapshot = itemsList[position]
-        Log.d("Diana", item.id.toString())
         // Title
         var emoji: String = getEmoji(item.getString("emoji").toString())
         holder.itemTextView.text = emoji + " " + item.getString("text")
         // Subtitle
         holder.locationTextView.text = showLocation(item)
+        // Swith for delete reminder
+        holder.switchDone.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                db.deleteReminder(item.id)
+            }
 
+        }
         holder.itemView.setOnClickListener {
             var idReminder = item.id
             cellClickListener.onCellClickListener(idReminder)

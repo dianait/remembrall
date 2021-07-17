@@ -39,6 +39,15 @@ import com.google.firebase.ktx.Firebase
 
      }
 
+     fun deleteReminder(id: String){
+         db.collection("reminders").document(id).delete().addOnSuccessListener {
+             Log.d("debugInit", "elemento eliminado $id")
+         }.addOnFailureListener { exception ->
+             Log.d("debugInit", "get failed with ", exception)
+         }
+
+     }
+
      fun addReminder(reminder: Reminder){
          val r = hashMapOf(
              "text" to reminder.text,
