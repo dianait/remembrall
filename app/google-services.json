@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "129245627952",
+    "project_id": "remembrall-60b37",
+    "storage_bucket": "remembrall-60b37.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:129245627952:android:927b9cb4bf0fb251f28ff5",
+        "android_client_info": {
+          "package_name": "com.dianait.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "129245627952-4u31svjdcuv69hl2am8gch6ag0jrkhqp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBwZebRoYR6eY4oyJYfN4ns91uMY6aBrg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "129245627952-4u31svjdcuv69hl2am8gch6ag0jrkhqp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
