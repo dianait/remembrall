@@ -1,15 +1,17 @@
 package services.firestore
 
+import Reminder
 import android.content.ContentValues
 import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
  class FirestoreService {
-    private var db: FirebaseFirestore = Firebase.firestore
+     private var db: FirebaseFirestore = Firebase.firestore
 
     fun getAllReminders(callback: (QuerySnapshot)->Unit = { data ->   println("data: $data") }){
         db.collection("reminders")
@@ -35,6 +37,20 @@ import com.google.firebase.ktx.Firebase
                  Log.d("debugInit", "get failed with ", exception)
              }
 
+     }
+
+     fun addReminder(reminder: Reminder){
+         val r = hashMapOf(
+             "text" to reminder.text,
+             "emoji" to reminder.emoji,
+             "name" to reminder.name,
+             "location" to GeoPoint(reminder.location.latitude, reminder.location.longitude)
+         )
+
+         db.collection("reminders").document()
+             .set(r)
+             .addOnSuccessListener { Log.d("debugInit", "DocumentSnapshot successfully written!") }
+             .addOnFailureListener { e -> Log.w("debugInit", "Error writing document", e) }
      }
 
 

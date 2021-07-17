@@ -1,16 +1,20 @@
-package com.example.myapplication
-import Reminder
+package com.dianait.myapplication
 import android.util.Log
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.recyclerview.widget.RecyclerView
 import com.dianait.myapplication.CellClickListener
 import com.dianait.myapplication.R
 import com.google.firebase.firestore.DocumentSnapshot
 
+enum class Emoji(val src: String) {
+    BUY("🛒"),
+    PERSONAL("☘️"),
+    PICK("↗️")
+}
 
 internal class RecyclerAdapter(private var itemsList: MutableList<DocumentSnapshot>, private val cellClickListener: CellClickListener) :
 
@@ -33,7 +37,8 @@ internal class RecyclerAdapter(private var itemsList: MutableList<DocumentSnapsh
         val item: DocumentSnapshot = itemsList[position]
         Log.d("Diana", item.id.toString())
         // Title
-        holder.itemTextView.text = item.getString("emoji") + " " + item.getString("text")
+        var emoji: String = getEmoji(item.getString("emoji").toString())
+        holder.itemTextView.text = emoji + " " + item.getString("text")
         // Subtitle
         holder.locationTextView.text = showLocation(item)
 
@@ -49,5 +54,14 @@ internal class RecyclerAdapter(private var itemsList: MutableList<DocumentSnapsh
     private fun showLocation(element: DocumentSnapshot): String {
         if (element.getGeoPoint("location")?.latitude == null) return "\uD83D\uDCCD Not location avaliable"
         return "\uD83D\uDCCD" + element.getGeoPoint("location")?.longitude + ", " + element.getGeoPoint("location")?.latitude
+    }
+
+    private fun getEmoji(name: String): String{
+        return when (name) {
+            "BUY" -> Emoji.BUY.src
+            "PERSONAL" -> Emoji.PERSONAL.src
+            "PICK" -> Emoji.PICK.src
+            else -> Emoji.BUY.src
+        }
     }
 }

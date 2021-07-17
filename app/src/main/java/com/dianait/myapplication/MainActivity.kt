@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.RecyclerAdapter
+import com.dianait.myapplication.RecyclerAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity(), CellClickListener {
             startActivity(intent)
         }
     }
-
 
     override fun onCellClickListener(id: String) {
         val intent = Intent(this, DetailReminder::class.java).apply {
