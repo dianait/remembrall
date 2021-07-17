@@ -32,12 +32,8 @@ class FormReminder : AppCompatActivity() {
 
             var reminder = Reminder(id = "", text = inputTextReminder.text.toString(),   emoji = inputEmoji.text.toString(), location = GeoPoint(inputLatitude.text.toString().toDouble(), inputLongitude.text.toString().toDouble()),name = inputNameLocation.text.toString())
             db.addReminder(reminder)
-        /*val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra("textReminder", inputTextReminder.text.toString())
-            }
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            */
-
         }
     }
 }
