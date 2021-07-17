@@ -14,6 +14,7 @@ import services.firestore.FirestoreService
 
 interface CellClickListener {
     fun onCellClickListener(id: String)
+    fun onDeleteReminder(id: String)
 }
 
 class MainActivity : AppCompatActivity(), CellClickListener {
@@ -47,7 +48,13 @@ class MainActivity : AppCompatActivity(), CellClickListener {
             putExtra("id", id)
         }
         startActivity(intent)
+    }
 
+    override fun onDeleteReminder(id: String){
+        db.deleteReminder(id)
+        var reminderToDelete: DocumentSnapshot? = itemsList.find { it.id == id }
+        itemsList.remove(reminderToDelete)
+        customAdapter.notifyDataSetChanged()
     }
 
     private fun initRecycler() {

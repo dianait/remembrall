@@ -1,4 +1,5 @@
 package com.dianait.myapplication
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.dianait.myapplication.CellClickListener
 import com.dianait.myapplication.R
@@ -29,7 +31,7 @@ internal class RecyclerAdapter(private var itemsList: MutableList<DocumentSnapsh
         // subtitle
         var locationTextView: TextView = view.findViewById(R.id.location)
         // switch done
-        var switchDone = view.findViewById<Switch>(R.id.switch_done)
+        var switchDone = view.findViewById<SwitchMaterial>(R.id.switch_done)
     }
 
     @NonNull
@@ -50,10 +52,10 @@ internal class RecyclerAdapter(private var itemsList: MutableList<DocumentSnapsh
         // Swith for delete reminder
         holder.switchDone.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                db.deleteReminder(item.id)
+                cellClickListener.onDeleteReminder(item.id)
             }
-
         }
+
         holder.itemView.setOnClickListener {
             var idReminder = item.id
             cellClickListener.onCellClickListener(idReminder)
