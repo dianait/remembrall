@@ -1,6 +1,7 @@
 package services.gps
 
-class Gps {
+
+class Gps() {
 
 
 }

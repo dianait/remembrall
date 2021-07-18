@@ -16,21 +16,25 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.common.api.GoogleApi
 import com.google.android.gms.location.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.GeoPoint
 import services.firestore.FirestoreService
+import kotlin.properties.Delegates
 
 
 class FormReminder : AppCompatActivity() {
     private lateinit var db: FirestoreService
+    private var lat by Delegates.notNull<Double>()
+    private var lng by Delegates.notNull<Double>()
     var mFusedLocationClient: FusedLocationProviderClient? = null
     var PERMISSION_ID = 44
 
     override fun onCreate(savedInstanceState: Bundle?) {
         db = FirestoreService()
+        lat = 0.0
+        lng = 0.0
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_form_reminder)
@@ -42,7 +46,9 @@ class FormReminder : AppCompatActivity() {
         var btnCurrentLocation = findViewById<Button>(R.id.btn_current_location)
         btnCurrentLocation.setOnClickListener {
 
-            getLastLocation()
+            var geoPoint: GeoPoint = getLastLocation()
+            inputLatitude.setText(geoPoint.latitude.toString())
+            inputLongitude.setText(geoPoint.longitude.toString())
 
         }
 
@@ -62,25 +68,22 @@ class FormReminder : AppCompatActivity() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLastLocation() {
+    private fun getLastLocation(): GeoPoint {
+
         // check if permissions are given
         if (checkPermissions()) {
 
             // check if location is enabled
             if (isLocationEnabled()) {
-
-                // getting last
-                // location from
-                // FusedLocationClient
-                // object
                 mFusedLocationClient!!.lastLocation.addOnCompleteListener { task ->
                     val location = task.result
                     if (location == null) {
                         requestNewLocationData()
                     } else {
-                        var lat = location.latitude.toString()
-                        var lng = location.longitude.toString()
+                        lat = location.latitude
+                        lng = location.longitude
                         Log.d("debugInit", "$lat - $lng")
+
                     }
                 }
             } else {
@@ -90,10 +93,10 @@ class FormReminder : AppCompatActivity() {
                 startActivity(intent)
             }
         } else {
-            // if permissions aren't available,
-            // request for permissions
             requestPermissions()
         }
+
+        return GeoPoint(lat, lng)
     }
 
 
