@@ -2,6 +2,7 @@ package com.dianait.myapplication
 
 import Reminder
 import android.Manifest
+import android.R.id
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -10,40 +11,59 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.provider.Settings
+import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.GeoPoint
 import services.firestore.FirestoreService
-import kotlin.properties.Delegates
 
 
 class FormReminder : AppCompatActivity() {
     private lateinit var db: FirestoreService
-    private var lat by Delegates.notNull<Double>()
-    private var lng by Delegates.notNull<Double>()
-    var mFusedLocationClient: FusedLocationProviderClient? = null
-    var PERMISSION_ID = 44
+    // private var lat by Delegates.notNull<Double>()
+    // private var lng by Delegates.notNull<Double>()
+    private var lat: Double = 0.0
+    private var lng: Double = 0.0
+    private var mFusedLocationClient: FusedLocationProviderClient? = null
+    private var PERMISSION_ID = 44
+    private var chipSelected = "PERSONAL"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         db = FirestoreService()
-        lat = 0.0
-        lng = 0.0
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_form_reminder)
         val inputTextReminder = findViewById<TextInputEditText>(R.id.input_reminder)
-        val inputEmoji = findViewById<TextInputEditText>(R.id.input_emoji_text)
+        // val inputEmoji = findViewById<TextInputEditText>(R.id.input_emoji_text)
         val inputLatitude = findViewById<TextInputEditText>(R.id.input_latitude_text)
         val inputLongitude = findViewById<TextInputEditText>(R.id.input_longitude_text)
         val inputNameLocation = findViewById<TextInputEditText>(R.id.input_name_location_text)
         var btnCurrentLocation = findViewById<Button>(R.id.btn_current_location)
+        val categoryChips = findViewById<ChipGroup>(R.id.chipGroup)
+        categoryChips.layoutDirection = View.LAYOUT_DIRECTION_LOCALE
+        categoryChips.isSingleSelection = true
+        categoryChips.setOnCheckedChangeListener { group, checkedId ->
+
+            var chipText: String = ""
+            chipText = if (checkedId == -1) {
+                "No chip selected"
+            } else {
+                val chip: Chip = group.findViewById(checkedId)
+                chip.text as String
+            }
+            Log.d("CHIPS", chipText)
+            chipSelected = chipText
+        }
+
         btnCurrentLocation.setOnClickListener {
 
             var geoPoint: GeoPoint = getLastLocation()
@@ -57,7 +77,8 @@ class FormReminder : AppCompatActivity() {
 
             var reminder = Reminder(id = "",
                 text = inputTextReminder.text.toString(),
-                emoji = inputEmoji.text.toString(),
+                // emoji = inputEmoji.text.toString(),
+                emoji = chipSelected,
                 location = GeoPoint(inputLatitude.text.toString().toDouble(),
                     inputLongitude.text.toString().toDouble()),
                 name = inputNameLocation.text.toString())
