@@ -1,5 +1,6 @@
 package services.firestore
 
+import Location
 import Reminder
 import android.content.ContentValues
 import android.util.Log
@@ -61,6 +62,32 @@ import com.google.firebase.ktx.Firebase
              .addOnSuccessListener { Log.d("debugInit", "DocumentSnapshot successfully written!") }
              .addOnFailureListener { e -> Log.w("debugInit", "Error writing document", e) }
      }
+
+     fun addLocation(location: Location){
+         Log.d("diana", "ADDLOCATION INIT")
+         val r = hashMapOf(
+             "name" to location.name,
+             "geoPoint" to GeoPoint(location.lat, location.lng)
+         )
+
+         db.collection("locations").document()
+             .set(r)
+             .addOnSuccessListener { Log.d("debugInit", "DocumentSnapshot successfully written!") }
+             .addOnFailureListener { e -> Log.w("debugInit", "Error writing document", e) }
+
+     }
+
+     fun getAllPlacesNames(callback: (QuerySnapshot)->Unit = { data ->   println("data: $data") }){
+         db.collection("locations")
+             .get()
+             .addOnSuccessListener { result ->
+                 callback(result)
+             }
+             .addOnFailureListener { exception ->
+                 Log.d(ContentValues.TAG, "Error getting documents: ", exception)
+             }
+     }
+
 
 
  }
