@@ -46,6 +46,8 @@ class FormReminder : AppCompatActivity() {
         val inputLatitude = findViewById<TextInputEditText>(R.id.input_latitude_text)
         val inputLongitude = findViewById<TextInputEditText>(R.id.input_longitude_text)
         val inputNameLocation = findViewById<TextInputEditText>(R.id.input_name_location_text)
+
+
         var btnCurrentLocation = findViewById<Button>(R.id.btn_current_location)
         val categoryChips = findViewById<ChipGroup>(R.id.chipGroup)
         categoryChips.layoutDirection = View.LAYOUT_DIRECTION_LOCALE
@@ -76,7 +78,6 @@ class FormReminder : AppCompatActivity() {
 
             var reminder = Reminder(id = "",
                 text = inputTextReminder.text.toString(),
-                // emoji = inputEmoji.text.toString(),
                 emoji = chipSelected,
                 location = GeoPoint(inputLatitude.text.toString().toDouble(),
                     inputLongitude.text.toString().toDouble()),

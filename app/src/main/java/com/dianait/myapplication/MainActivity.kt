@@ -5,70 +5,72 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.dynamic.SupportFragmentWrapper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import services.firestore.FirestoreService
 
 
-interface CellClickListener {
-    fun onCellClickListener(id: String)
-    fun onDeleteReminder(id: String)
-}
-
-class MainActivity : AppCompatActivity(), CellClickListener {
-
-    enum class Emoji(val src: String) {
-        BUY("🛒"),
-        PERSONAL("☘️"),
-        PICK("↗️")
-    }
-
-    private lateinit var itemsList: MutableList<DocumentSnapshot>
-    private lateinit var customAdapter: RecyclerAdapter
-    private lateinit var db: FirestoreService
-
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        db = FirestoreService()
-        itemsList = mutableListOf<DocumentSnapshot>()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         title = "\uD83D\uDD2E Remembrall"
-        initRecycler()
-        val btnAddReminder = findViewById<FloatingActionButton>(R.id.btn_add_reminder)
-        btnAddReminder.setOnClickListener {
-            val intent = Intent(this, FormReminder::class.java)
-            startActivity(intent)
-        }
-    }
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.fragment_container_main, HomeFragment())
+            .commit()
 
-    override fun onCellClickListener(id: String) {
-        val intent = Intent(this, DetailReminder::class.java).apply {
-            putExtra("id", id)
-        }
-        startActivity(intent)
-    }
+        supportFragmentManager.setFragmentResultListener(
+            "goToForm",
+            this,
+            {
+                    _,_ -> navigateToForm()
+            }
 
-    override fun onDeleteReminder(id: String){
-        db.deleteReminder(id)
-        var reminderToDelete: DocumentSnapshot? = itemsList.find { it.id == id }
-        itemsList.remove(reminderToDelete)
-        customAdapter.notifyDataSetChanged()
-    }
+        )
 
-    private fun initRecycler() {
-        val recyclerView: RecyclerView = findViewById(R.id.reminder_list)
-        db.getAllReminders { data: QuerySnapshot ->
-            itemsList.addAll(data!!)
-            customAdapter.notifyDataSetChanged()
-        }
-        customAdapter = RecyclerAdapter(itemsList, this)
-        val layoutManager = LinearLayoutManager(applicationContext)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = customAdapter
+        supportFragmentManager.setFragmentResultListener(
+            "goToDetail",
+            this,
+            {
+                    _, bundle:Bundle ->
+                var id = bundle.getString("id")
+                if (id != null) {
+                    navigateToDetailFragment(id)
+                }
+            }
 
+        )
 
     }
+
+    private fun navigateToForm(){
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container_main, FormFragment())
+            .addToBackStack("FormFragment")
+            .commit()
+    }
+
+    private fun navigateToDetailFragment(id: String){
+        val  bundle: Bundle = Bundle();
+        bundle.putString("id", id)
+        val detailFragment = DetailFragment()
+        detailFragment.arguments = bundle
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container_main, detailFragment)
+            .addToBackStack("DetailFragment")
+            .commit()
+    }
+
+
+
+
 
 }
 // Log.d("Diana ", Emoji.PERSONAL)

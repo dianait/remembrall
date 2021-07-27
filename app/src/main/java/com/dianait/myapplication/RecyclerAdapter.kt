@@ -1,16 +1,11 @@
 package com.dianait.myapplication
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.NonNull
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.dianait.myapplication.CellClickListener
-import com.dianait.myapplication.R
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.firestore.DocumentSnapshot
 import services.firestore.FirestoreService
@@ -21,7 +16,7 @@ enum class Emoji(val src: String) {
     PICK("↗️")
 }
 
-internal class RecyclerAdapter(private var itemsList: MutableList<DocumentSnapshot>, private val cellClickListener: CellClickListener) :
+internal class RecyclerAdapter(private var itemsList: MutableList<DocumentSnapshot>, private val cellClickListener: CellClickListener2) :
 
     RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>() {
     internal inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
